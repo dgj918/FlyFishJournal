@@ -1,0 +1,11 @@
+<mat-toolbar color="primary" class="bottomNav" *ngIf=showNavBar  >
+    <a class="example-icon" [routerLink]="['/plan']" [routerLinkActive]="['link-active']" mat-icon-button>
+      <fa-icon [icon]="['fas', 'map-marked-alt']" size="lg"></fa-icon>
+    </a>
+    <a class="example-icon" [routerLink]="['/fish']" [routerLinkActive]="['link-active']" mat-icon-button>
+      <fa-icon [icon]="['fas', 'fish']" size="lg"></fa-icon>
+    </a>
+    <a class="example-icon" [routerLink]="['/review']" [routerLinkActive]="['link-active']" mat-icon-button>
+      <fa-icon [icon]="['fas', 'chart-bar']" size="lg"></fa-icon>
+    </a>
+</mat-toolbar>

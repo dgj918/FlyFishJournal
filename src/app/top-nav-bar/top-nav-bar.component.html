@@ -1,0 +1,24 @@
+<mat-toolbar *ngIf="showNavBar; else landing" color="primary">
+    <mat-toolbar-row>
+      <span>Fly Fishing Journal</span>
+      <span class="example-spacer"></span>
+      <a class="example-icon" [routerLink]="['/']" [routerLinkActive]="['link-active']" mat-icon-button>
+        <fa-icon [icon]="['fas', 'sign-out-alt']" size="lg"></fa-icon>
+      </a>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<ng-template #landing>
+    <mat-toolbar color="primary">
+        <mat-toolbar-row>
+          <span>Fly Fishing Journal</span>
+          <span class="example-spacer"></span>
+          <a class="example-icon" [routerLink]="['/login']" [routerLinkActive]="['link-active']" mat-icon-button>
+            <fa-icon [icon]="['fas', 'sign-in-alt']" size="lg"></fa-icon>
+          </a>
+          <a class="example-icon" [routerLink]="['/login']" [routerLinkActive]="['link-active']" mat-icon-button>
+            <fa-icon [icon]="['fas', 'user-plus']" size="lg"></fa-icon>
+          </a>
+        </mat-toolbar-row>
+    </mat-toolbar>
+</ng-template>
