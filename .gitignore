@@ -1,3 +1,11 @@
 node_modules
 /src/environments
 /src/assets
+.firebaserc
+firebase.json
+database.rules.json
+firestore.indexes.json
+firestore.rules
+.firebase
+/dist
+/public
