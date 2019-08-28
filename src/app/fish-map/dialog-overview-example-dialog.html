@@ -1,0 +1,11 @@
+<div *ngIf="markerDate === 'No Date'; else date">
+  <h1 mat-dialog-title>{{markerDate}}</h1>
+</div>
+<ng-template #date>
+  <h1 mat-dialog-title>{{markerDate | date:"longDate"}}</h1>
+</ng-template>
+<h1 mat-dialog-title>{{markerNotes}}</h1>
+<div>
+  <button type="button" class="btn btn-light" id = "modalBtn" (click)="onDelClick()">Delete</button>
+  <button type="button" class="btn btn-light" id = "modalBtn" (click)="close()">Cancel</button>
+</div>

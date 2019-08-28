@@ -1,18 +1,24 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { OnInit, NgZone } from '@angular/core';
 import { WaypointsService } from '../services/waypoints.service'
-import { tileLayer, latLng, marker, icon, polyline, Map, TileLayer } from 'leaflet';
+import { tileLayer, latLng, marker, icon, Map, TileLayer } from 'leaflet';
 import { Subject } from 'rxjs';
-import { debounceTime, scan } from 'rxjs/operators';
 import { NavBarShowService } from '../services/nav-bar-show.service';
 import { firestore } from 'firebase';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
+import { Component, Inject } from '@angular/core';
+import { WaypointDataService } from '../services/waypoint-data.service';
+import * as moment from 'moment';
+
+export interface DialogData {
+  markerData: any;
+  deleteFlag: boolean;
+}
 
 @Component({
   selector: 'app-fish-map',
   templateUrl: './fish-map.component.html',
   styleUrls: ['./fish-map.component.scss']
 })
-
-
 
 export class FishMapComponent implements OnInit {
   eventCount = 0;
@@ -24,14 +30,16 @@ export class FishMapComponent implements OnInit {
   wMaps: TileLayer;
   layersControl: any;
   options: any;
+  name: any;
+  fishMap: Map;
   
-  constructor(private waypointService: WaypointsService, private zone: NgZone, private navBarShowService: NavBarShowService) {
+  constructor(public waypointDataService: WaypointDataService, public dialog: MatDialog, private waypointService: WaypointsService, private zone: NgZone, private navBarShowService: NavBarShowService) {
     this.navBarShowService.show()
     
     // Define our base layers so we can reference them multiple times
-    this.streetMaps = tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    this.streetMaps = tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     detectRetina: true,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     });
   
     this.wMaps = tileLayer('http://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
@@ -42,7 +50,7 @@ export class FishMapComponent implements OnInit {
     // Layers control object with our two base layers and the three overlay layers
     this.layersControl = {
       baseLayers: {
-        'Street Maps': this.streetMaps,
+        'Satellite Maps': this.streetMaps,
         'Wikimedia Maps': this.wMaps
       },
       overlays: {}
@@ -63,7 +71,9 @@ export class FishMapComponent implements OnInit {
     this.getWaypoints()
   }
 
-  onMapReady(map: Map) {}
+  onMapReady(map: Map) {
+    this.fishMap = map;
+  }
 
   getWaypoints(){
     this.waypointService.getWayPoints().subscribe(res => {
@@ -82,7 +92,8 @@ export class FishMapComponent implements OnInit {
               iconUrl: '../assets/marker-icon.png',
               shadowUrl: '../assets/marker-shadow.png'
             })
-          })      
+          })
+          addMarker.on('click', () => {this.openDialog(addMarker)})
           this.layers.push(addMarker)
           this.layersControl.overlays[lat] = addMarker
         })
@@ -101,12 +112,93 @@ export class FishMapComponent implements OnInit {
           iconUrl: '../assets/marker-icon.png',
           shadowUrl: '../assets/marker-shadow.png'
         })
-      })      
+      })
+      addMarker.on('click', () => {this.openDialog(addMarker)})
       this.layers.push(addMarker)
       this.layersControl.overlays[lat] = addMarker
       let addGeo = new firestore.GeoPoint(lat,long)
       this.waypointService.createWayPoint(addGeo)
     })
   }
+
+  deleteMarker(){
+    console.log("delMarker")
+  }
+
+  openDialog(marker): void {
+    this.zone.run(() => {
+      console.log(marker)
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.width = '250px'
+      dialogConfig.data = {markerData: marker}
+      const dialogRef = this.dialog.open(DialogOverviewExampleDialog, dialogConfig);
+
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        console.log(result)
+        if (result.delFlag == true) {
+          this.fishMap.removeLayer(result.marker)
+          let delGeo = new firestore.GeoPoint(result.marker._latlng.lat,result.marker._latlng.lng)
+          console.log(delGeo)
+          this.waypointService.deleteWayPoint(delGeo)
+        }
+  
+      });
+    });
+  }
+
+}
+
+
+
+
+@Component({
+  selector: 'dialog-overview-example-dialog',
+  templateUrl: 'dialog-overview-example-dialog.html',
+  styleUrls: ['./fish-map.component.scss']
+})
+export class DialogOverviewExampleDialog {
+  markerData: any;
+  deleteFlag: boolean;
+  waypointData: any;
+  markerDate: any;
+  markerNotes: any;
+
+  constructor( public waypointDataService: WaypointDataService,
+    private dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+      console.log(data.markerData)
+      this.deleteFlag = false
+      this.markerData = data.markerData
+      let lat = this.markerData._latlng.lat
+      let lng = this.markerData._latlng.lng
+      let waypointCoor = lat.toString() + lng.toString()
+      this.waypointData = this.waypointDataService.getWayPointData(waypointCoor)
+      
+      this.waypointData.subscribe((result => {
+        if (result != null) {
+          this.markerDate = moment.unix(result['Date']['seconds'])
+          this.markerDate = moment(this.markerDate).format("MMM DD YYYY")
+          this.markerNotes = result.Notes
+        } else {
+          this.markerDate = "No Date"
+          this.markerNotes = "No Notes"
+        }
+      }))
+    }
+
+    close(): void {
+      console.log("oncloseClick")
+      this.deleteFlag = false
+      this.dialogRef.close({marker: this.markerData, delFlag: this.deleteFlag});
+    }
+
+    onDelClick(): void {
+      console.log("onDelClick")
+      this.deleteFlag = true
+      this.dialogRef.close({marker: this.markerData, delFlag: this.deleteFlag});
+    }
 
 }

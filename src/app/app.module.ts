@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatToolbarModule, MatIconModule} from '@angular/material';
+import {MatToolbarModule, MatIconModule, MatButtonModule} from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,7 +11,7 @@ import { AngularFireModule } from "@angular/fire";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
 import { AngularFireAuthModule } from '@angular/fire/auth';
 
-import { FishMapComponent } from './fish-map/fish-map.component';
+import { FishMapComponent, DialogOverviewExampleDialog } from './fish-map/fish-map.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BottomNavBarComponent } from './bottom-nav-bar/bottom-nav-bar.component';
@@ -25,6 +25,8 @@ import { LoginComponent } from './login/login.component';
 import { LandingComponent } from './landing/landing.component';
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
+import { MarkerPopupComponent } from './marker-popup/marker-popup.component';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 
 @NgModule({
@@ -36,12 +38,15 @@ import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
     PlanComponent,
     ReviewComponent,
     LoginComponent,
-    LandingComponent
+    LandingComponent,
+    MarkerPopupComponent,
+    DialogOverviewExampleDialog
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MatToolbarModule,
+    MatButtonModule,
     MatIconModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -63,10 +68,12 @@ import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
         toastMessageOnAuthError: false, // whether to open/show a snackbar message on auth error - default : true
     }),
     LeafletModule.forRoot(),
-    FontAwesomeModule
+    FontAwesomeModule,
+    ButtonsModule.forRoot()
   ],
   providers: [AngularFireAuthGuard],
   bootstrap: [AppComponent],
+  entryComponents: [DialogOverviewExampleDialog],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
   ]

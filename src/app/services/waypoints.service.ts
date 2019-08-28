@@ -22,6 +22,15 @@ export class WaypointsService {
     });
   }
 
+  deleteWayPoint(data) {
+    var waypointsRef = this.firestore.collection("wayPoints").doc(this.userId);
+
+    // Atomically add a new region to the "regions" array field.
+    waypointsRef.update({ 
+        waypoints: firebase.firestore.FieldValue.arrayRemove(data)
+    });
+  }
+
   getWayPoints() { 
     var waypointsRef = this.firestore.collection("wayPoints");
     return waypointsRef.valueChanges()
