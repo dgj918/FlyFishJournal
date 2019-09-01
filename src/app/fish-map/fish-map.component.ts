@@ -8,6 +8,7 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA, MatDialogConfig } from '@angu
 import { Component, Inject } from '@angular/core';
 import { WaypointDataService } from '../services/waypoint-data.service';
 import * as moment from 'moment';
+import { FormControl } from '@angular/forms';
 
 export interface DialogData {
   markerData: any;
@@ -151,8 +152,10 @@ export class FishMapComponent implements OnInit {
 
 }
 
+/*
+Dialog for marker information
 
-
+*/
 
 @Component({
   selector: 'dialog-overview-example-dialog',
@@ -165,8 +168,12 @@ export class DialogOverviewExampleDialog {
   waypointData: any;
   markerDate: any;
   markerNotes: any;
+  waypointCoor: string;
 
-  constructor( public waypointDataService: WaypointDataService,
+  constructor( 
+    private zone: NgZone,
+    private dialog: MatDialog,
+    public waypointDataService: WaypointDataService,
     private dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
       console.log(data.markerData)
@@ -174,13 +181,13 @@ export class DialogOverviewExampleDialog {
       this.markerData = data.markerData
       let lat = this.markerData._latlng.lat
       let lng = this.markerData._latlng.lng
-      let waypointCoor = lat.toString() + lng.toString()
-      this.waypointData = this.waypointDataService.getWayPointData(waypointCoor)
+      this.waypointCoor = lat.toString() + lng.toString()
+      this.waypointData = this.waypointDataService.getWayPointData(this.waypointCoor)
       
       this.waypointData.subscribe((result => {
         if (result != null) {
           this.markerDate = moment.unix(result['Date']['seconds'])
-          this.markerDate = moment(this.markerDate).format("MMM DD YYYY")
+          this.markerDate = moment(this.markerDate)
           this.markerNotes = result.Notes
         } else {
           this.markerDate = "No Date"
@@ -188,6 +195,24 @@ export class DialogOverviewExampleDialog {
         }
       }))
     }
+
+    openFormDialog(): void {
+      this.zone.run(() => {
+        console.log(marker)
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.width = '250px'
+        dialogConfig.data = {markerData: this.waypointCoor}
+        const dialogRef = this.dialog.open(FormDialog, dialogConfig);
+  
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('form dialog closed')
+          this.markerDate = result.markerDate
+          this.markerNotes = result.markerNotes
+      });
+      })
+    };
 
     close(): void {
       console.log("oncloseClick")
@@ -199,6 +224,87 @@ export class DialogOverviewExampleDialog {
       console.log("onDelClick")
       this.deleteFlag = true
       this.dialogRef.close({marker: this.markerData, delFlag: this.deleteFlag});
+    }
+
+}
+
+/*
+Catch Data Model
+
+*/
+
+export class catchData {
+
+  constructor(
+    public date: Date,
+    public notes: String
+  ) {  }
+
+}
+
+/*
+Dialog for marker Form
+
+*/
+
+@Component({
+  selector: 'dialog-overview-example-dialog',
+  templateUrl: 'form-dialog.html',
+  styleUrls: ['./fish-map.component.scss']
+})
+export class FormDialog implements OnInit {
+  markerData: any;
+  deleteFlag: boolean;
+  waypointData: any;
+  markerDate: any;
+  markerNotes: any;
+  catchModel: catchData;
+  waypointCoor: String;
+  formDate = new FormControl(new Date());
+  picker: any;
+
+  constructor( public waypointDataService: WaypointDataService,
+    private dialogRef: MatDialogRef<FormDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+      console.log(data.markerData)
+      console.log(this.markerDate)
+      this.waypointCoor = data.markerData
+      
+    }
+
+    ngOnInit(): void {
+      this.waypointData = this.waypointDataService.getWayPointData(this.waypointCoor)
+      
+      this.waypointData.subscribe((result => {
+        if (result != null) {
+          this.markerDate = moment(result.Date)
+          console.log(result)
+          this.markerNotes = result.Notes
+        } else {
+          this.markerDate = "No Date"
+          this.markerNotes = "No Notes"
+        }
+        console.log(this.markerDate)
+        this.formDate = this.markerDate
+        console.log(this.formDate)
+        this.catchModel = new catchData(this.markerDate, this.markerNotes)
+      }))
+    }
+
+    close(): void {
+      this.dialogRef.close();
+    }
+
+    onSubmitClick(): void {
+      console.log(this.formDate)
+      this.markerNotes = this.catchModel.notes
+      this.markerDate = this.formDate.value
+      console.log(this.markerDate, this.formDate)
+      console.log(this.markerDate, this.markerNotes)
+      let markerDateUnix = moment(this.markerDate).format("M, D, Y").toString()
+      console.log(markerDateUnix)
+      this.waypointDataService.setWayPointData(this.waypointCoor,markerDateUnix, this.markerNotes)
+      this.dialogRef.close({markerDate: this.markerDate, markerNotes: this.markerNotes});
     }
 
 }

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatToolbarModule, MatIconModule, MatButtonModule} from '@angular/material';
+import {MatToolbarModule, MatIconModule, MatButtonModule, MatNativeDateModule, MatInputModule} from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,7 +11,7 @@ import { AngularFireModule } from "@angular/fire";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
 import { AngularFireAuthModule } from '@angular/fire/auth';
 
-import { FishMapComponent, DialogOverviewExampleDialog } from './fish-map/fish-map.component';
+import { FishMapComponent, DialogOverviewExampleDialog, FormDialog } from './fish-map/fish-map.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BottomNavBarComponent } from './bottom-nav-bar/bottom-nav-bar.component';
@@ -27,6 +27,11 @@ import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import { MarkerPopupComponent } from './marker-popup/marker-popup.component';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatMomentDateModule} from '@angular/material-moment-adapter';
+import { MomentModule } from 'ngx-moment';
 
 
 @NgModule({
@@ -40,11 +45,20 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     LoginComponent,
     LandingComponent,
     MarkerPopupComponent,
-    DialogOverviewExampleDialog
+    DialogOverviewExampleDialog,
+    FormDialog
   ],
   imports: [
     BrowserModule,
+    MomentModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatMomentDateModule, 
+    MatFormFieldModule,
     BrowserAnimationsModule,
+    FormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -73,7 +87,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
   ],
   providers: [AngularFireAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [DialogOverviewExampleDialog],
+  entryComponents: [DialogOverviewExampleDialog, FormDialog],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
   ]

@@ -2,10 +2,11 @@
   <h1 mat-dialog-title>{{markerDate}}</h1>
 </div>
 <ng-template #date>
-  <h1 mat-dialog-title>{{markerDate | date:"longDate"}}</h1>
+  <h1 mat-dialog-title>{{markerDate | amDateFormat:'LL'}}</h1>
 </ng-template>
-<h1 mat-dialog-title>{{markerNotes}}</h1>
+<p mat-dialog-title>{{markerNotes}}</p>
 <div>
   <button type="button" class="btn btn-light" id = "modalBtn" (click)="onDelClick()">Delete</button>
-  <button type="button" class="btn btn-light" id = "modalBtn" (click)="close()">Cancel</button>
+  <button type="button" class="btn btn-light" id = "modalBtn" (click)="close()">Close</button>
+  <button type="button" class="btn btn-light" id = "modalBtn" (click)="openFormDialog()">Add Information</button>
 </div>
