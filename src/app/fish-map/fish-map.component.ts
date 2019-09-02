@@ -186,8 +186,8 @@ export class DialogOverviewExampleDialog {
       
       this.waypointData.subscribe((result => {
         if (result != null) {
-          this.markerDate = moment.unix(result['Date']['seconds'])
-          this.markerDate = moment(this.markerDate)
+          console.log(result)
+          this.markerDate = moment(result['Date'])
           this.markerNotes = result.Notes
         } else {
           this.markerDate = "No Date"

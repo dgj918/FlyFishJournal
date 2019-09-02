@@ -1,8 +1,8 @@
 <div *ngIf="markerDate === 'No Date'; else date">
-  <h1 mat-dialog-title>{{markerDate}}</h1>
+  <h3 mat-dialog-title>{{markerDate}}</h3>
 </div>
 <ng-template #date>
-  <h1 mat-dialog-title>{{markerDate | amDateFormat:'LL'}}</h1>
+  <h3 mat-dialog-title>{{markerDate | amDateFormat:'ll'}}</h3>
 </ng-template>
 <p mat-dialog-title>{{markerNotes}}</p>
 <div>

@@ -19,7 +19,7 @@
 
     <div class="form-group">
       <label for="notes">Notes</label>
-      <input matInput [(ngModel)]="catchModel.notes" type="text" class="form-control" id="notes" name="notes">
+      <textarea matInput minRows="10" [(ngModel)]="catchModel.notes" class="form-control" id="notes" name="notes"></textarea>
     </div>
 
     <button type="button" (click)="onSubmitClick()" class="btn btn-success">Submit</button>
