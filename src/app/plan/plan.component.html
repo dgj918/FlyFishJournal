@@ -1,3 +1,29 @@
-<p>
-  plan works!
-</p>
+
+  <div class="map"
+    leaflet
+    [leafletOptions]="options"
+    [leafletLayersControl]="layersControl"
+    (leafletMapReady)="onMapReady($event)"
+    (leafletClick)="addMarker($event)">
+    <div *ngFor="let l of layers" [leafletLayer]="l"></div>
+  </div>
+
+
+<div class="planForm">
+  <form [formGroup]="planForm">
+    <mat-form-field>
+      <input matInput [matDatepicker]="pickerStart" formControlName="startDay" placeholder="Start Date">
+      <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+      <mat-datepicker #pickerStart></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput type="time" formControlName="startTime">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput type="time" formControlName="endTime">
+    </mat-form-field>
+
+  </form>
+</div>

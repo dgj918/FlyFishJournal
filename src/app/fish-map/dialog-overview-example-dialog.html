@@ -1,4 +1,4 @@
-<div *ngIf="markerDate === 'No Date'; else date">
+<div *ngIf="markerData.date == 'No Date'; else date">
   <h3 mat-dialog-title>{{markerDate}}</h3>
 </div>
 <ng-template #date>
