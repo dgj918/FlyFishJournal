@@ -28,6 +28,9 @@ export class PlanComponent implements OnInit {
   markerCount: number;
   startIconUrl: string;
   startShadowUrl: string;
+  putInLocation: string;
+  takeOutLocation: string;
+  noDataFromForm: string;
 
   constructor(private navBarShowService: NavBarShowService, private zone: NgZone, private fb: FormBuilder){
     this.navBarShowService.show()
@@ -60,6 +63,10 @@ export class PlanComponent implements OnInit {
   
     this.layers = [this.wMaps, this.streetMaps]
     this.markerCount = 0;
+
+    this.putInLocation = '';
+    this.takeOutLocation = '';
+    this.noDataFromForm = '';
   }
 
   ngOnInit(){
@@ -74,12 +81,12 @@ export class PlanComponent implements OnInit {
     }))
   }
 
-  onMapReady(map: Map) {
+  onMapReady(map: Map): void {
     this.planMap = map;
     this.markerLayerGroup = new LayerGroup().addTo(this.planMap)
   }
 
-  addMarker(eventType: string) {
+  addMarker(eventType: string): void {
     this.zone.run(() => {
       let lat = eventType['latlng']['lat']
       let long = eventType['latlng']['lng']
@@ -88,14 +95,18 @@ export class PlanComponent implements OnInit {
       if (this.markerCount == 2){
         this.clearMarkers()
         this.markerCount = 0
+        this.putInLocation = ''
+        this.takeOutLocation = ''
       } 
       
       if(this.markerCount == 0) {
-        this.startIconUrl = '../assets/boatLaunch.png'
+        this.startIconUrl = '../assets/canoe-access-white-30.svg'
         this.startShadowUrl = ''
+        this.putInLocation = lat + ' ' + long
       } else if(this.markerCount == 1){
-        this.startIconUrl = '../assets/flag-checkered-solid.svg'
+        this.startIconUrl = '../assets/hand-launch-small-boat-launch-white-30.svg'
         this.startShadowUrl = ''
+        this.takeOutLocation = lat + ' ' + long
       }
 
       let addMarker = marker([ lat, long ], {
@@ -111,9 +122,13 @@ export class PlanComponent implements OnInit {
     })    
   }
 
-  clearMarkers(){
+  clearMarkers(): void{
     console.log("Clear")
     this.markerLayerGroup.clearLayers()
+  }
+
+  saveTrip(): void{
+    
   }
 
 }

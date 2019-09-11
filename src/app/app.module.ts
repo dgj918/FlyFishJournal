@@ -32,6 +32,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatMomentDateModule} from '@angular/material-moment-adapter';
 import { MomentModule } from 'ngx-moment';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,8 @@ import { MomentModule } from 'ngx-moment';
   ],
   imports: [
     BrowserModule,
+    MatCardModule,
+    FlexLayoutModule,
     MomentModule,
     ReactiveFormsModule,
     MatInputModule,

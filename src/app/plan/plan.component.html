@@ -1,3 +1,7 @@
+<div fxLayout="column" fxLayoutAlign="space-evenly center" >
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <h4 headline>Select a Put In and Take Out Location</h4>
+  </div>
 
   <div class="map"
     leaflet
@@ -8,22 +12,47 @@
     <div *ngFor="let l of layers" [leafletLayer]="l"></div>
   </div>
 
+  <div class="noDataForm">
+    <h2>{{noDataFromForm}}</h2>
+  </div>
 
-<div class="planForm">
-  <form [formGroup]="planForm">
-    <mat-form-field>
-      <input matInput [matDatepicker]="pickerStart" formControlName="startDay" placeholder="Start Date">
-      <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
-      <mat-datepicker #pickerStart></mat-datepicker>
-    </mat-form-field>
+  <div class="formContainer" fxLayout="row" fxLayoutAlign="center center">
+    <mat-card class="example-card">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title>Trip Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="planForm">
+          <form [formGroup]="planForm">
+            <mat-form-field class="planFormField">
+              <input matInput [matDatepicker]="pickerStart" formControlName="startDay" placeholder="Start Date">
+              <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+              <mat-datepicker #pickerStart></mat-datepicker>
+            </mat-form-field>
 
-    <mat-form-field>
-      <input matInput type="time" formControlName="startTime">
-    </mat-form-field>
+            <mat-form-field class="planFormField">
+              <mat-label>Start Time: </mat-label>
+              <input matInput type="time" formControlName="startTime">
+            </mat-form-field>
 
-    <mat-form-field>
-      <input matInput type="time" formControlName="endTime">
-    </mat-form-field>
-
-  </form>
+            <mat-form-field class="planFormField">
+              <mat-label>End Time: </mat-label>
+              <input matInput type="time" formControlName="endTime">
+            </mat-form-field>
+          </form>
+          <p>
+            Put In Location: {{putInLocation}}
+          </p>
+          <p>
+            Take Out Location: {{takeOutLocation}}
+          </p>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button (click)="saveTrip">SAVE</button>
+        <button mat-button>SHARE</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 </div>
