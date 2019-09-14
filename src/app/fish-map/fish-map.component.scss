@@ -1,9 +1,64 @@
-.map-wrapper {
-    width: 99%;
-    height: 700px;
-    position: relative;
-    top: 2px;
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .map-wrapper {
+        width: 99%;
+        height: 630px;
+        position: relative;
+        top: 2px;
+    }
 }
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .map-wrapper {
+        width: 99%;
+        height: 630px;
+        position: relative;
+        top: 2px;
+    }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+    .map-wrapper {
+        width: 99%;
+        height: 700px;
+        position: relative;
+        top: 2px;
+    }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    .map-wrapper {
+        width: 99%;
+        height: 900px;
+        position: relative;
+        top: 2px;
+    }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .map-wrapper {
+        width: 99%;
+        height: 1240px;
+        position: relative;
+        top: 2px;
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    .map-wrapper {
+        width: 99%;
+        height: 600px;
+        position: relative;
+        top: 2px;
+    }
+}
+
+
 
 .map{
     width: 100%;
