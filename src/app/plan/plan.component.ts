@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { tileLayer, latLng, marker, icon, Map, TileLayer, layerGroup, LayerGroup } from 'leaflet';
 import { Form, FormGroup, FormBuilder } from '@angular/forms';
 import * as moment from 'moment';
+import { SaveTripPlanService } from '../services/save-trip-plan.service';
 
 
 @Component({
@@ -31,8 +32,15 @@ export class PlanComponent implements OnInit {
   putInLocation: string;
   takeOutLocation: string;
   noDataFromForm: string;
+  planDay: string;
+  planStart: any;
+  planEnd: any;
 
-  constructor(private navBarShowService: NavBarShowService, private zone: NgZone, private fb: FormBuilder){
+  constructor(private navBarShowService: NavBarShowService, 
+    private zone: NgZone, 
+    private fb: FormBuilder,
+    private saveTripService: SaveTripPlanService)
+  {
     this.navBarShowService.show()
 
     // Define our base layers so we can reference them multiple times
@@ -77,7 +85,9 @@ export class PlanComponent implements OnInit {
     })
 
     this.planForm.valueChanges.subscribe((data => {
-      console.log(data)
+      this.planDay = data.startDay
+      this.planStart = data.startTime
+      this.planEnd = data.endTime
     }))
   }
 
@@ -128,7 +138,8 @@ export class PlanComponent implements OnInit {
   }
 
   saveTrip(): void{
-    
+    this.planDay = moment().format('ll')
+    this.saveTripService.saveTrip(this.planDay, this.planStart, this.planEnd, this.putInLocation, this.takeOutLocation)
   }
 
 }
