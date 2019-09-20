@@ -8,7 +8,7 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA, MatDialogConfig } from '@angu
 import { Component, Inject } from '@angular/core';
 import { WaypointDataService } from '../services/waypoint-data.service';
 import * as moment from 'moment';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormArray } from '@angular/forms';
 
 export interface DialogData {
   markerData: any;
