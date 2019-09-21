@@ -11,7 +11,9 @@ import { AngularFireModule } from "@angular/fire";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
 import { AngularFireAuthModule } from '@angular/fire/auth';
 
-import { FishMapComponent, DialogOverviewExampleDialog, FormDialog } from './fish-map/fish-map.component';
+import { FishMapComponent } from './fish-map/fish-map.component';
+import { DialogOverviewExampleDialog } from './fish-map/marker-dialog.component'
+import { FormDialog } from './fish-map/form-dialog.component'
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BottomNavBarComponent } from './bottom-nav-bar/bottom-nav-bar.component';

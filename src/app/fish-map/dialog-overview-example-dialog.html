@@ -1,12 +1,20 @@
-<div *ngIf="markerData.date == 'No Date'; else date">
-  <h3 mat-dialog-title>{{markerDate}}</h3>
-</div>
-<ng-template #date>
-  <h3 mat-dialog-title>{{markerDate | amDateFormat:'ll'}}</h3>
-</ng-template>
-<p mat-dialog-title>{{markerNotes}}</p>
-<div>
-  <button type="button" class="btn btn-light" id = "modalBtn" (click)="onDelClick()">Delete</button>
-  <button type="button" class="btn btn-light" id = "modalBtn" (click)="close()">Close</button>
-  <button type="button" class="btn btn-light" id = "modalBtn" (click)="openFormDialog()">Add Information</button>
-</div>
+<mat-card class="example-card">
+  <mat-card-header *ngIf="markerDate == 'No Date'; else date">
+    <mat-card-title>No Date</mat-card-title>
+    <mat-card-subtitle></mat-card-subtitle>
+  </mat-card-header>
+  <ng-template #date>
+    <mat-card-header>
+      <mat-card-title>{{markerDate | amDateFormat:'ll'}}</mat-card-title>
+      <mat-card-subtitle></mat-card-subtitle>
+    </mat-card-header>
+  </ng-template>
+  <mat-card-content>
+    <p>{{markerNotes}}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button class="btn btn-light" color="warn" id = "modalBtn" (click)="onDelClick()">Delete</button>
+    <button mat-raised-button class="btn btn-light" id = "modalBtn" (click)="close()">Close</button>
+    <button mat-raised-button class="btn btn-light" id = "modalBtn" (click)="openFormDialog()">Add Information</button>  
+  </mat-card-actions>
+</mat-card>
