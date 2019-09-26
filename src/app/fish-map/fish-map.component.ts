@@ -131,7 +131,7 @@ export class FishMapComponent implements OnInit {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
-      dialogConfig.width = '250px'
+      dialogConfig.width = '350px'
       dialogConfig.data = {markerData: marker}
       const dialogRef = this.dialog.open(DialogOverviewExampleDialog, dialogConfig);
 
@@ -148,5 +148,4 @@ export class FishMapComponent implements OnInit {
       });
     });
   }
-
 }

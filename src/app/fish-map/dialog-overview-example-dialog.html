@@ -10,11 +10,17 @@
     </mat-card-header>
   </ng-template>
   <mat-card-content>
+    <mat-card-title>Fish: </mat-card-title>
+    <p *ngFor="let markerFish of markerFishArr">
+      <span matBadge="{{markerFish.number}}" matBadgeOverlap="false">{{markerFish.species}} : {{markerFish.fly}}</span><fa-icon class="trashFish" (click)="deleteFish(markerFish.species, markerFish.fly, markerFish.number)" [icon]="['fas', 'trash-alt']" size="lg"></fa-icon>
+    </p>
+    <mat-card-title>Notes: </mat-card-title>
     <p>{{markerNotes}}</p>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button class="btn btn-light" color="warn" id = "modalBtn" (click)="onDelClick()">Delete</button>
     <button mat-raised-button class="btn btn-light" id = "modalBtn" (click)="close()">Close</button>
-    <button mat-raised-button class="btn btn-light" id = "modalBtn" (click)="openFormDialog()">Add Information</button>  
+    <button mat-raised-button class="btn btn-light" id = "modalBtn" (click)="openFormDialog()">Edit Trip Info</button>
+    <button mat-raised-button class="btn btn-light" id = "modalBtn" (click)="openFishDialog()">Add Fish</button>   
   </mat-card-actions>
 </mat-card>

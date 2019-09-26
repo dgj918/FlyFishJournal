@@ -1,0 +1,17 @@
+<form [formGroup]="fishAddForm">
+    <mat-form-field>
+        <input matInput placeholder="Species" formControlName="species">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="Number" formControlName="numFish">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="Fly" formControlName="fly">
+    </mat-form-field>
+</form>
+
+<button mat-raised-button class="btn btn-light" color="primary" id = "modalBtn" (click)="addFish()">Add</button>
+<button mat-raised-button class="btn btn-light" id = "modalBtn" (click)="close()">Close</button>
+    

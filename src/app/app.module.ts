@@ -22,7 +22,7 @@ import { PlanComponent } from './plan/plan.component';
 import { ReviewComponent } from './review/review.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faFish, faChartBar, faMapMarkedAlt, faSignInAlt, faUserPlus, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faFish, faChartBar, faMapMarkedAlt, faSignInAlt, faUserPlus, faSignOutAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { LoginComponent } from './login/login.component';
 import { LandingComponent } from './landing/landing.component';
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
@@ -36,6 +36,8 @@ import { MatMomentDateModule} from '@angular/material-moment-adapter';
 import { MomentModule } from 'ngx-moment';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {MatCardModule} from '@angular/material/card';
+import {MatBadgeModule} from '@angular/material/badge';
+import { AddFishDialog } from './fish-map/add-fish-dialog/add-fish-dialog.component'
 
 @NgModule({
   declarations: [
@@ -49,10 +51,13 @@ import {MatCardModule} from '@angular/material/card';
     LandingComponent,
     MarkerPopupComponent,
     DialogOverviewExampleDialog,
-    FormDialog
+    AddFishDialog,
+    FormDialog,
+    AddFishDialog
   ],
   imports: [
     BrowserModule,
+    MatBadgeModule,
     MatCardModule,
     FlexLayoutModule,
     MomentModule,
@@ -92,7 +97,7 @@ import {MatCardModule} from '@angular/material/card';
   ],
   providers: [AngularFireAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [DialogOverviewExampleDialog, FormDialog],
+  entryComponents: [DialogOverviewExampleDialog, FormDialog, AddFishDialog],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
   ]
@@ -100,6 +105,6 @@ import {MatCardModule} from '@angular/material/card';
 export class AppModule {
   constructor() {
     // Add an icon to the library for convenient access in other components
-    library.add(faFish, faChartBar, faMapMarkedAlt,faSignInAlt,faUserPlus,faSignOutAlt);
+    library.add(faFish, faChartBar, faMapMarkedAlt,faSignInAlt,faUserPlus,faSignOutAlt, faTrashAlt);
   }
  }

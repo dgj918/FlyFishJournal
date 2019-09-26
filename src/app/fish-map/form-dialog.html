@@ -4,17 +4,10 @@
 <ng-template #date>
   <h2 mat-dialog-title>{{markerDate | amDateFormat:'ll'}}</h2>
 </ng-template>
-
-
 <div mat-dialog-content>
-  <p mat-dialog-title>{{markerNotes}}</p>
-  <p>Fish</p>
-  
-  <h4>Enter Catch Data</h4>
-  <mat-divider></mat-divider>
   <form>
     <mat-form-field>
-      <input matInput [matDatepicker]="picker1" placeholder="Angular forms" [formControl]="formDate">
+      <input matInput [matDatepicker]="picker1" placeholder="Trip Date" [formControl]="formDate">
       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
       <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
@@ -24,15 +17,10 @@
       <textarea matInput minRows="10" [(ngModel)]="catchModel.notes" class="form-control" id="notes" name="notes"></textarea>
     </mat-form-field>
     <mat-divider></mat-divider>
-    <mat-form-field>
-      <label for="notes">Number of Fish</label>
-      <input matInput type="number" minRows="10" [(ngModel)]="catchModel.fish.number" class="form-control" id="notes" name="notes">
-    </mat-form-field>
-    <button type="button" (click)="onSubmitClick()" class="btn btn-success">Submit</button>
   </form>
-
 </div>
 
 <div>
-  <button type="button" class="btn btn-light" id = "modalBtn" (click)="close()">Cancel</button>
+  <button mat-raised-button type="button" (click)="onSubmitClick()" color="primary" class="btn btn-success">Submit</button>
+  <button mat-raised-button type="button" class="btn btn-light" id = "modalBtn" (click)="close()">Cancel</button>
 </div>
