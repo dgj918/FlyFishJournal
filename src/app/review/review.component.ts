@@ -9,12 +9,18 @@ export interface returnedTripData {
   data: tripData
 }
 
+export interface fishMap{
+  species: string,
+  number: number
+}
+
 export interface tripData {
   date: string,
   start: string,
   end: string,
   startloc: string,
-  endloc: string
+  endloc: string,
+  Fish: fishMap[]
 }
 
 @Component({
@@ -48,13 +54,15 @@ export class ReviewComponent implements OnInit {
 
     _tripData.subscribe((data) => {
       data.map((data) => {
+        console.log(data)
         this.tripDataArr.push(
           {
             'date': data['id'],
             'start': data['data']['startTime'],
             'end': data['data']['endTime'],
             'startloc': data['data']['putInLocation'],
-            'endloc': data['data']['takeOutLocation']
+            'endloc': data['data']['takeOutLocation'],
+            'Fish': data['data']['Fish']
           }
         )
       })
