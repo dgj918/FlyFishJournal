@@ -10,3 +10,4 @@ firestore.rules
 /dist
 /public
 FeatureList.txt
+notes.md

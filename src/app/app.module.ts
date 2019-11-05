@@ -38,7 +38,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import {MatCardModule} from '@angular/material/card';
 import {MatBadgeModule} from '@angular/material/badge';
 import { AddFishDialog } from './fish-map/add-fish-dialog/add-fish-dialog.component'
-
+import {MatMenuModule} from '@angular/material/menu';
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,6 +57,7 @@ import { AddFishDialog } from './fish-map/add-fish-dialog/add-fish-dialog.compon
   ],
   imports: [
     BrowserModule,
+    MatMenuModule,
     MatBadgeModule,
     MatCardModule,
     FlexLayoutModule,

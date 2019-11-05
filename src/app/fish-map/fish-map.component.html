@@ -1,3 +1,15 @@
+<button mat-raised-button class="iconButton" [matMenuTriggerFor]="menu">Menu</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="changeIcon('boatLaunch')">Boat Launch</button>
+  <button mat-menu-item (click)="changeIcon('canoeLaunch')">Canoe/Kayak Launch</button>
+  <button mat-menu-item (click)="changeIcon('fish')">Fish</button>
+  <button mat-menu-item (click)="changeIcon('parking')">Parking</button>
+  <button mat-menu-item (click)="changeIcon('marker')">Marker</button>
+</mat-menu>
+<span>Icon Selected: </span>
+<span>
+  <img class="iconSelected" [src]="selectedIconUrl">
+</span>
 <div class="map-wrapper">
     <div class="map"
     leaflet

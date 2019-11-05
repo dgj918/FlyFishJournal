@@ -149,28 +149,52 @@ export class PlanComponent implements OnInit {
   }
 
   getWaypoints(){
-    this.waypointService.getWayPoints().subscribe(res => {
-      let userData = res[0]
-      let waypoints = userData['waypoints']
-      console.log(userData)
-      for (let point in waypoints){
-        this.zone.run(() => {
-          let lat = waypoints[point]['_lat']
-          let long = waypoints[point]['_long']
-          console.log(lat,long)
-          let addMarker = marker([ lat, long ], {
-            icon: icon({
-              iconSize: [ 25, 41 ],
-              iconAnchor: [ 13, 41 ],
-              iconUrl: '../assets/marker-icon.png',
-              shadowUrl: '../assets/marker-shadow.png'
-            })
-          })
-          this.layers.push(addMarker)
-
-        })
+    console.log("Get Waypoints")
+    
+    this.waypointService.getWayPoints().get().subscribe(doc => {
+      if (doc.exists) {
+        console.log(doc.data()['waypoints'])
+          this.addMarkersToMap(doc.data()['waypoints'])
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
       }
     })
+  }
+
+  addMarkersToMap(data: any){
+    let waypoints = data
+    
+    for (let point in waypoints){
+      
+      this.zone.run(() => {
+        let lat = waypoints[point]['coord']['_lat']
+        let long = waypoints[point]['coord']['_long']
+        let iconSelect = icon({
+          iconSize: [ 25, 41 ],
+          iconAnchor: [ 13, 41 ],
+          iconUrl: '',
+          shadowUrl: ''
+        })
+
+        let selectedIcon = waypoints[point]['iconType']
+
+        console.log(iconSelect.options)
+        if (selectedIcon == 'marker-icon.png'){
+          iconSelect.options.iconUrl = '../assets/marker-icon.png'
+          iconSelect.options.shadowUrl = '../assets/marker-shadow.png'
+        } else {
+          iconSelect.options.iconUrl = '../assets/' + selectedIcon
+        }
+
+        let addMarker = marker([ lat, long ], {
+          icon: iconSelect
+        })
+
+        this.layers.push(addMarker)
+        this.layersControl.overlays[lat] = addMarker
+      })
+    }
   }
 
 }
