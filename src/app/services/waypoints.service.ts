@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
+import { MatRipple } from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
@@ -13,26 +14,31 @@ export class WaypointsService {
     this.userId = localStorage.getItem('user');
    }
 
-  createWayPoint(data) {
+  createWayPoint(geopoint, iconType) {
+    console.log("create from service")
     var waypointsRef = this.firestore.collection("wayPoints").doc(this.userId);
 
     // Atomically add a new region to the "regions" array field.
     waypointsRef.update({ 
-        waypoints: firebase.firestore.FieldValue.arrayUnion(data)
+        waypoints: firebase.firestore.FieldValue.arrayUnion({'coord': geopoint, 'iconType': iconType})
     });
   }
 
-  deleteWayPoint(data) {
+  deleteWayPoint(data, icon) {
+    console.log("Delete from service")
     var waypointsRef = this.firestore.collection("wayPoints").doc(this.userId);
-
     // Atomically add a new region to the "regions" array field.
     waypointsRef.update({ 
-        waypoints: firebase.firestore.FieldValue.arrayRemove(data)
+        waypoints: firebase.firestore.FieldValue.arrayRemove({'coord': data, 'iconType': icon})
     });
+    let wref = firebase.firestore.FieldValue.arrayRemove({'coord': data, 'iconType': icon})
+    console.log(wref)
   }
 
   getWayPoints() { 
-    var waypointsRef = this.firestore.collection("wayPoints");
-    return waypointsRef.valueChanges()
+    console.log("Get Waypoints from service")
+    console.log(this.userId)
+    var waypointsRef = this.firestore.collection("wayPoints").doc(this.userId);
+    return waypointsRef;
   }
 }

@@ -9,11 +9,10 @@ import { Component, Inject } from '@angular/core';
 import { WaypointDataService } from '../services/waypoint-data.service';
 import * as moment from 'moment';
 import { FormControl, FormArray } from '@angular/forms';
-
-export interface DialogData {
-  markerData: any;
-  deleteFlag: boolean;
-}
+import { FormDialog } from './form-dialog.component'
+import { DialogOverviewExampleDialog } from './marker-dialog.component'
+import { iconMap } from '../models/iconMap';
+import { CdkCell } from '@angular/cdk/table';
 
 @Component({
   selector: 'app-fish-map',
@@ -33,8 +32,21 @@ export class FishMapComponent implements OnInit {
   options: any;
   name: any;
   fishMap: Map;
+  selectedIcon: string;
+  selectedIconUrl: string;
+  iconMap: iconMap
+
+
   
   constructor(public waypointDataService: WaypointDataService, public dialog: MatDialog, private waypointService: WaypointsService, private zone: NgZone, private navBarShowService: NavBarShowService) {
+    this.iconMap = {
+      'boatLaunch': 'boat-launch-black-32@2x.png',
+      'canoeLaunch': 'canoe-access-black-32@2x.png',
+      'fish': 'fishing-black-32@2x.png',
+      'parking': 'parking-black-32@2x.png',
+      'marker': 'marker-icon.png'
+    } 
+    this.selectedIconUrl = "../../assets/marker-icon.png"
     this.navBarShowService.show()
     
     // Define our base layers so we can reference them multiple times
@@ -77,48 +89,84 @@ export class FishMapComponent implements OnInit {
   }
 
   getWaypoints(){
-    this.waypointService.getWayPoints().subscribe(res => {
-      let userData = res[0]
-      let waypoints = userData['waypoints']
-      console.log(userData)
-      for (let point in waypoints){
-        this.zone.run(() => {
-          let lat = waypoints[point]['_lat']
-          let long = waypoints[point]['_long']
-          console.log(lat,long)
-          let addMarker = marker([ lat, long ], {
-            icon: icon({
-              iconSize: [ 25, 41 ],
-              iconAnchor: [ 13, 41 ],
-              iconUrl: '../assets/marker-icon.png',
-              shadowUrl: '../assets/marker-shadow.png'
-            })
-          })
-          addMarker.on('click', () => {this.openDialog(addMarker)})
-          this.layers.push(addMarker)
-          this.layersControl.overlays[lat] = addMarker
-        })
+    console.log("Get Waypoints")
+    
+    this.waypointService.getWayPoints().get().subscribe(doc => {
+      if (doc.exists) {
+        console.log(doc.data()['waypoints'])
+          this.addMarkersToMap(doc.data()['waypoints'])
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
       }
     })
   }
 
+  addMarkersToMap(data: any){
+    let waypoints = data
+    
+    for (let point in waypoints){
+      
+      this.zone.run(() => {
+        let lat = waypoints[point]['coord']['_lat']
+        let long = waypoints[point]['coord']['_long']
+        let iconSelect = icon({
+          iconSize: [ 25, 41 ],
+          iconAnchor: [ 13, 41 ],
+          iconUrl: '',
+          shadowUrl: ''
+        })
+
+        let selectedIcon = waypoints[point]['iconType']
+
+        console.log(iconSelect.options)
+        if (selectedIcon == 'marker-icon.png'){
+          iconSelect.options.iconUrl = '../assets/marker-icon.png'
+          iconSelect.options.shadowUrl = '../assets/marker-shadow.png'
+        } else {
+          iconSelect.options.iconUrl = '../assets/' + selectedIcon
+        }
+
+        let addMarker = marker([ lat, long ], {
+          icon: iconSelect
+        })
+
+        addMarker.on('click', () => {this.openDialog(addMarker)})
+        this.layers.push(addMarker)
+        this.layersControl.overlays[lat] = addMarker
+      })
+    }
+  }
+
   addMarker(eventType: string) {
+    console.log("Add Marker")
     this.zone.run(() => {
       let lat = eventType['latlng']['lat']
       let long = eventType['latlng']['lng']
-      let addMarker = marker([ lat, long ], {
-        icon: icon({
-          iconSize: [ 25, 41 ],
-          iconAnchor: [ 13, 41 ],
-          iconUrl: '../assets/marker-icon.png',
-          shadowUrl: '../assets/marker-shadow.png'
-        })
+      let iconSelect = icon({
+        iconSize: [ 25, 41 ],
+        iconAnchor: [ 13, 41 ],
+        iconUrl: '',
+        shadowUrl: ''
       })
+      console.log(iconSelect.options)
+      if (this.selectedIcon == 'marker-icon.png'){
+        iconSelect.options.iconUrl = '../assets/marker-icon.png'
+        iconSelect.options.shadowUrl = '../assets/marker-shadow.png'
+      } else {
+        iconSelect.options.iconUrl = '../assets/' + this.selectedIcon
+      }
+
+      let addMarker = marker([ lat, long ], {
+        icon: iconSelect
+      })
+      console.log(addMarker)
       addMarker.on('click', () => {this.openDialog(addMarker)})
       this.layers.push(addMarker)
       this.layersControl.overlays[lat] = addMarker
       let addGeo = new firestore.GeoPoint(lat,long)
-      this.waypointService.createWayPoint(addGeo)
+      let iconType = this.selectedIcon
+      this.waypointService.createWayPoint(addGeo, iconType)
     })
   }
 
@@ -128,183 +176,31 @@ export class FishMapComponent implements OnInit {
 
   openDialog(marker): void {
     this.zone.run(() => {
-      console.log(marker)
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
-      dialogConfig.width = '250px'
+      dialogConfig.width = '350px'
       dialogConfig.data = {markerData: marker}
       const dialogRef = this.dialog.open(DialogOverviewExampleDialog, dialogConfig);
 
       dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-        console.log(result)
         if (result.delFlag == true) {
           this.fishMap.removeLayer(result.marker)
+          let markerIcon = result.marker.options.icon.options.iconUrl
+          markerIcon = markerIcon.split('/')
+          markerIcon = markerIcon[2]
           let delGeo = new firestore.GeoPoint(result.marker._latlng.lat,result.marker._latlng.lng)
-          console.log(delGeo)
-          this.waypointService.deleteWayPoint(delGeo)
+          this.waypointService.deleteWayPoint(delGeo, markerIcon)
         }
   
       });
     });
   }
 
+  changeIcon(iconSelect: string): void {
+    this.selectedIcon = this.iconMap[iconSelect]
+    this.selectedIconUrl = '../../assets/' + this.selectedIcon
+  }
 }
 
-/*
-Dialog for marker information
 
-*/
-
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: 'dialog-overview-example-dialog.html',
-  styleUrls: ['./fish-map.component.scss']
-})
-export class DialogOverviewExampleDialog {
-  markerData: any;
-  deleteFlag: boolean;
-  waypointData: any;
-  markerDate: any;
-  markerNotes: any;
-  waypointCoor: string;
-
-  constructor( 
-    private zone: NgZone,
-    private dialog: MatDialog,
-    public waypointDataService: WaypointDataService,
-    private dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-      console.log(data.markerData)
-      this.deleteFlag = false
-      this.markerData = data.markerData
-      let lat = this.markerData._latlng.lat
-      let lng = this.markerData._latlng.lng
-      this.waypointCoor = lat.toString() + lng.toString()
-      this.waypointData = this.waypointDataService.getWayPointData(this.waypointCoor)
-      
-      this.waypointData.subscribe((result => {
-        if (result != null) {
-          console.log(result)
-          this.markerDate = moment(result['Date'])
-          this.markerNotes = result.Notes
-        } else {
-          this.markerDate = "No Date"
-          this.markerNotes = "No Notes"
-        }
-      }))
-    }
-
-    openFormDialog(): void {
-      this.zone.run(() => {
-        console.log(marker)
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = true;
-        dialogConfig.autoFocus = true;
-        dialogConfig.width = '250px'
-        dialogConfig.data = {markerData: this.waypointCoor}
-        const dialogRef = this.dialog.open(FormDialog, dialogConfig);
-  
-        dialogRef.afterClosed().subscribe(result => {
-          console.log('form dialog closed')
-          this.markerDate = result.markerDate
-          this.markerNotes = result.markerNotes
-      });
-      })
-    };
-
-    close(): void {
-      console.log("oncloseClick")
-      this.deleteFlag = false
-      this.dialogRef.close({marker: this.markerData, delFlag: this.deleteFlag});
-    }
-
-    onDelClick(): void {
-      console.log("onDelClick")
-      this.deleteFlag = true
-      this.dialogRef.close({marker: this.markerData, delFlag: this.deleteFlag});
-    }
-
-}
-
-/*
-Catch Data Model
-
-*/
-
-export class catchData {
-
-  constructor(
-    public date: Date,
-    public notes: String
-  ) {  }
-
-}
-
-/*
-Dialog for marker Form
-
-*/
-
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: 'form-dialog.html',
-  styleUrls: ['./fish-map.component.scss']
-})
-export class FormDialog implements OnInit {
-  markerData: any;
-  deleteFlag: boolean;
-  waypointData: any;
-  markerDate: any;
-  markerNotes: any;
-  catchModel: catchData;
-  waypointCoor: String;
-  formDate = new FormControl(new Date());
-  picker: any;
-
-  constructor( public waypointDataService: WaypointDataService,
-    private dialogRef: MatDialogRef<FormDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-      console.log(data.markerData)
-      console.log(this.markerDate)
-      this.waypointCoor = data.markerData
-      
-    }
-
-    ngOnInit(): void {
-      this.waypointData = this.waypointDataService.getWayPointData(this.waypointCoor)
-      
-      this.waypointData.subscribe((result => {
-        if (result != null) {
-          this.markerDate = moment(result.Date)
-          console.log(result)
-          this.markerNotes = result.Notes
-        } else {
-          this.markerDate = "No Date"
-          this.markerNotes = "No Notes"
-        }
-        console.log(this.markerDate)
-        this.formDate = this.markerDate
-        console.log(this.formDate)
-        this.catchModel = new catchData(this.markerDate, this.markerNotes)
-      }))
-    }
-
-    close(): void {
-      this.dialogRef.close();
-    }
-
-    onSubmitClick(): void {
-      console.log(this.formDate)
-      this.markerNotes = this.catchModel.notes
-      this.markerDate = this.formDate.value
-      console.log(this.markerDate, this.formDate)
-      console.log(this.markerDate, this.markerNotes)
-      let markerDateUnix = moment(this.markerDate).format("M, D, Y").toString()
-      console.log(markerDateUnix)
-      this.waypointDataService.setWayPointData(this.waypointCoor,markerDateUnix, this.markerNotes)
-      this.dialogRef.close({markerDate: this.markerDate, markerNotes: this.markerNotes});
-    }
-
-}

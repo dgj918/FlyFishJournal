@@ -9,3 +9,5 @@ firestore.rules
 .firebase
 /dist
 /public
+FeatureList.txt
+notes.md
